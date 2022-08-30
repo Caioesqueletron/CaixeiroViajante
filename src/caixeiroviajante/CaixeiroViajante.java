@@ -7,17 +7,17 @@ package caixeiroviajante;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author Douglas
- */
+class Grafo {
+	public void buscaMelhorCaminho() {
+    	System.out.println("teste");
+
+	}
+}
+
 public class CaixeiroViajante {
 
-    /**
-     * @param args the command line arguments
-     */
+   
     public static void main(String[] args) {
-        // TODO code application logic here
         
         FileManager fileManager = new FileManager();
         ArrayList<String> text = fileManager.stringReader("./data/Teste.txt");
@@ -25,6 +25,7 @@ public class CaixeiroViajante {
         int nVertex = 0;
         int graph[][] = null;
         int i,j;
+        Grafo grafo = new Grafo();
         
         for (i = 0; i < text.size(); i++) {
             String line = text.get(i);
@@ -59,6 +60,9 @@ public class CaixeiroViajante {
         	System.out.println();
         }
         
+    
+        
+       
         /*
             REALIZAR A BUSCA!
         */
