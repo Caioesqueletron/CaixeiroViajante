@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package caixeiroviajante;
 
 import java.util.ArrayList;
@@ -21,32 +16,42 @@ public class CaixeiroViajante {
 		return aux == nVertex ? true : false;
 	}
 
-	public static void buscaMelhorCaminho(int graph[][], int source, boolean[] verticesVisitados) {
-		
-		if(todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
-			return;
-		}
+	public static int buscaMelhorCaminho(int graph[][],int first, int source, boolean[] verticesVisitados, int custo, int melhorCusto) {
 		
 		List<Integer> verticesAdjacentes = procuraVerticeAjacente(graph, source );
+		
+		if(todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
+			if(verticesAdjacentes.contains(first)) {
+				if(custo < melhorCusto) {
+					melhorCusto = custo;
+					return melhorCusto;
+				}
+				System.out.println("Esse caminho é ideal");
+			}
+		}
+		
 		verticesVisitados[source] = true;
+		
+		//boolean copiaVerticesVisitados[] = verticesVisitados; 
 		
 
 		
 		for(int i = 0; i<verticesAdjacentes.size();i++) {
-			System.out.println(source);
+			//System.out.println(source);
 
 			if(!verticesVisitados[verticesAdjacentes.get(i)]){
-				buscaMelhorCaminho(graph, verticesAdjacentes.get(i), verticesVisitados);
+				verticesVisitados[verticesAdjacentes.get(i)] = true;
+				//System.out.println(verticesAdjacentes.get(i));
+				melhorCusto = buscaMelhorCaminho(graph,first, verticesAdjacentes.get(i), verticesVisitados, (custo + graph[source][verticesAdjacentes.get(i)]), melhorCusto );
+				verticesVisitados[verticesAdjacentes.get(i)] = false;
+
 
 			}
 			
 			
-			
-			
 		}
+		return melhorCusto;
 		
-		return;
-
 	}
 
 	private static List<Integer> procuraVerticeAjacente(int graph[][], int source) {
@@ -66,10 +71,12 @@ public class CaixeiroViajante {
 
 		FileManager fileManager = new FileManager();
 		ArrayList<String> text = fileManager.stringReader("./data/Teste.txt");
+		ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
 		int nVertex = 0;
 		int source = 0;
 		int cost = 0;
+		int bestCost = Integer.MAX_VALUE;
 		boolean verticesVisitados[] = null;
 		int graph[][] = null;
 		int i, j;
@@ -112,7 +119,8 @@ public class CaixeiroViajante {
 		
 
 		
-		buscaMelhorCaminho(graph, source, verticesVisitados);
+		int teste = buscaMelhorCaminho(graph, source,source, verticesVisitados, cost,bestCost);
+		System.out.println(teste);
 
 		/*
 		 * REALIZAR A BUSCA!
