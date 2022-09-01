@@ -3,6 +3,10 @@ package caixeiroviajante;
 import java.util.ArrayList;
 import java.util.List;
 
+class MelhorVertice {
+	public int custo = Integer.MAX_VALUE;
+	public ArrayList<Integer> melhorCaminho =new ArrayList<Integer>() ;
+}
 public class CaixeiroViajante {
 	public ArrayList<Integer> melhorCaminho1 = new ArrayList<Integer>();
 
@@ -16,24 +20,30 @@ public class CaixeiroViajante {
 		return aux == nVertex ? true : false;
 	}
 
-	public static int buscaMelhorCaminho(int graph[][], int first, int source, boolean[] verticesVisitados, int custo,
-			int melhorCusto, ArrayList<Integer> melhorCaminho) {
+	public static MelhorVertice buscaMelhorCaminho(int graph[][], int first, int source, boolean[] verticesVisitados, int custo,
+			int melhorCusto, ArrayList<Integer> melhorCaminho, MelhorVertice teste1) {
 
 		List<Integer> verticesAdjacentes = procuraVerticeAjacente(graph, source);
 
 		if (todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
 			if (verticesAdjacentes.contains(first)) {
 				custo += graph[source][first];
-				if (custo < melhorCusto) {
-					melhorCusto = custo;
-					melhorCaminho.add(first);
+				if (custo < teste1.custo) {
+					//melhorCusto = custo;
 					//melhorCaminho1 = melhorCaminho;
+					melhorCaminho.add(first);
 					System.out.println(melhorCaminho);
-					melhorCaminho.remove(first);
+					teste1.custo = custo;
+					teste1.melhorCaminho.clear();
+					for(int k = 0; k<melhorCaminho.size();k++) {
+						teste1.melhorCaminho.add(melhorCaminho.get(k));
+					}
+					//teste1.melhorCaminho = melhorCaminho;
+					melhorCaminho.remove(melhorCaminho.size()-1);
 				}
 			}
 
-			return melhorCusto;
+			return teste1;
 
 		}
 
@@ -46,17 +56,17 @@ public class CaixeiroViajante {
 
 			if (!verticesVisitados[verticesAdjacentes.get(i)]) {
 				verticesVisitados[verticesAdjacentes.get(i)] = true;
-				melhorCaminho.add(verticesAdjacentes.get(i));
+				if(verticesAdjacentes.get(i) != first) {melhorCaminho.add(verticesAdjacentes.get(i));}
 				// System.out.println(verticesAdjacentes.get(i));
-				melhorCusto = buscaMelhorCaminho(graph, first, verticesAdjacentes.get(i), verticesVisitados,
-						(custo + graph[source][verticesAdjacentes.get(i)]), melhorCusto, melhorCaminho);
+				 teste1 = buscaMelhorCaminho(graph, first, verticesAdjacentes.get(i), verticesVisitados,
+						(custo + graph[source][verticesAdjacentes.get(i)]), teste1.custo, melhorCaminho, teste1);
 				verticesVisitados[verticesAdjacentes.get(i)] = false;
 				melhorCaminho.remove(verticesAdjacentes.get(i));
 
 			}
 
 		}
-		return melhorCusto;
+		return teste1;
 
 	}
 
@@ -80,7 +90,7 @@ public class CaixeiroViajante {
 		ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
 		int nVertex = 0;
-		int source = 0;
+		int source = 1;
 		int cost = 0;
 		int bestCost = Integer.MAX_VALUE;
 		boolean verticesVisitados[] = null;
@@ -117,9 +127,9 @@ public class CaixeiroViajante {
 		for (i = 0; i < nVertex; i++) {
 			verticesVisitados[i] = false;
 		}
-
-		int teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho);
-		System.out.println(teste);
+		var teste1 = new MelhorVertice();
+		var teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho,teste1);
+		System.out.println(teste.melhorCaminho);
 		//System.out.println(this.melhorCaminho1);
 
 	}
