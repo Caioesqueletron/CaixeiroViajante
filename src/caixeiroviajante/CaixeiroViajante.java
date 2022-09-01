@@ -32,7 +32,7 @@ public class CaixeiroViajante {
 					//melhorCusto = custo;
 					//melhorCaminho1 = melhorCaminho;
 					melhorCaminho.add(first);
-					System.out.println(melhorCaminho);
+					//System.out.println(melhorCaminho);
 					teste1.custo = custo;
 					teste1.melhorCaminho.clear();
 					for(int k = 0; k<melhorCaminho.size();k++) {
@@ -90,7 +90,7 @@ public class CaixeiroViajante {
 		ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
 		int nVertex = 0;
-		int source = 1;
+		int source = 0;
 		int cost = 0;
 		int bestCost = Integer.MAX_VALUE;
 		boolean verticesVisitados[] = null;
@@ -112,7 +112,7 @@ public class CaixeiroViajante {
 					int weight = Integer.parseInt(edgeData[1]);
 
 					graph[oriVertex][targetVertex] = weight;
-					if(graph[targetVertex][oriVertex] == 0) {graph[targetVertex][oriVertex] = weight;}
+					graph[targetVertex][oriVertex] = weight;
 				}
 
 			}
@@ -129,7 +129,7 @@ public class CaixeiroViajante {
 		}
 		var teste1 = new MelhorVertice();
 		var teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho,teste1);
-		System.out.println(teste.melhorCaminho);
+		System.out.println(teste.custo);
 		//System.out.println(this.melhorCaminho1);
 
 	}
