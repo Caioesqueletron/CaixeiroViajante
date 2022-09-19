@@ -6,6 +6,7 @@ import java.util.List;
 class MelhorVertice {
 	public int custo = Integer.MAX_VALUE;
 	public ArrayList<Integer> melhorCaminho =new ArrayList<Integer>() ;
+	public int contagemCaminhos = 0;
 }
 public class CaixeiroViajante {
 	public ArrayList<Integer> melhorCaminho1 = new ArrayList<Integer>();
@@ -27,20 +28,24 @@ public class CaixeiroViajante {
 
 		if (todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
 			if (verticesAdjacentes.contains(first)) {
+				teste1.contagemCaminhos++;
 				custo += graph[source][first];
+				melhorCaminho.add(first);
 				if (custo < teste1.custo) {
-					//melhorCusto = custo;
-					//melhorCaminho1 = melhorCaminho;
-					melhorCaminho.add(first);
-					//System.out.println(melhorCaminho);
+					
+					//melhorCaminho.add(first);
 					teste1.custo = custo;
 					teste1.melhorCaminho.clear();
 					for(int k = 0; k<melhorCaminho.size();k++) {
 						teste1.melhorCaminho.add(melhorCaminho.get(k));
 					}
-					//teste1.melhorCaminho = melhorCaminho;
-					melhorCaminho.remove(melhorCaminho.size()-1);
+					//System.out.println(teste1.custo);
 				}
+				
+				//System.out.println(melhorCaminho);
+				melhorCaminho.remove(melhorCaminho.size()-1);
+
+
 			}
 
 			return teste1;
@@ -52,7 +57,6 @@ public class CaixeiroViajante {
 		// boolean copiaVerticesVisitados[] = verticesVisitados;
 
 		for (int i = 0; i < verticesAdjacentes.size(); i++) {
-			// System.out.println(source);
 
 			if (!verticesVisitados[verticesAdjacentes.get(i)]) {
 				verticesVisitados[verticesAdjacentes.get(i)] = true;
@@ -66,6 +70,7 @@ public class CaixeiroViajante {
 			}
 
 		}
+		
 		return teste1;
 
 	}
@@ -86,7 +91,7 @@ public class CaixeiroViajante {
 	public static void main(String[] args) {
 
 		FileManager fileManager = new FileManager();
-		ArrayList<String> text = fileManager.stringReader("./data/Teste.txt");
+		ArrayList<String> text = fileManager.stringReader("./data/Teste_2.txt");
 		ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
 		int nVertex = 0;
@@ -114,23 +119,22 @@ public class CaixeiroViajante {
 					graph[oriVertex][targetVertex] = weight;
 					graph[targetVertex][oriVertex] = weight;
 				}
-
+ 
 			}
 
 		}
 
 		
 		  
-		  for (i = 0; i < nVertex; i++) { for (j = 0; j < nVertex; j++) {
-		 System.out.print(" " + graph[i][j] + " "); } System.out.println(); }
+		 for (i = 0; i < nVertex; i++) { for (j = 0; j < nVertex; j++) {
+		System.out.print(" " + graph[i][j] + " "); } System.out.println(); }
 		 
 		for (i = 0; i < nVertex; i++) {
 			verticesVisitados[i] = false;
 		}
-		var teste1 = new MelhorVertice();
-		var teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho,teste1);
-		System.out.println(teste.custo);
-		//System.out.println(this.melhorCaminho1);
+		MelhorVertice  teste1 = new MelhorVertice();
+		MelhorVertice teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho,teste1);
+		System.out.println(teste.melhorCaminho);
 
 	}
 
