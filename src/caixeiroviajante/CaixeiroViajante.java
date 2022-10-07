@@ -5,9 +5,10 @@ import java.util.List;
 
 class MelhorVertice {
 	public int custo = Integer.MAX_VALUE;
-	public ArrayList<Integer> melhorCaminho =new ArrayList<Integer>() ;
+	public ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 	public int contagemCaminhos = 0;
 }
+
 public class CaixeiroViajante {
 	public ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
@@ -21,9 +22,10 @@ public class CaixeiroViajante {
 		return aux == nVertices ? true : false;
 	}
 
-	public static MelhorVertice buscaMelhorCaminho(int grafo[][], int origem, int verticeAtual, boolean[] verticesVisitados, int custo,
-			int melhorCusto, ArrayList<Integer> melhorCaminho, MelhorVertice caminho) {
-		
+	public static MelhorVertice buscaMelhorCaminho(int grafo[][], int origem, int verticeAtual,
+			boolean[] verticesVisitados, int custo, int melhorCusto, ArrayList<Integer> melhorCaminho,
+			MelhorVertice caminho) {
+
 		List<Integer> verticesAdjacentes = procuraVerticeAjacente(grafo, verticeAtual);
 
 		if (todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
@@ -32,16 +34,15 @@ public class CaixeiroViajante {
 				custo += grafo[verticeAtual][origem];
 				melhorCaminho.add(origem);
 				if (custo < caminho.custo) {
-					
+
 					caminho.custo = custo;
 					caminho.melhorCaminho.clear();
-					for(int k = 0; k<melhorCaminho.size();k++) {
+					for (int k = 0; k < melhorCaminho.size(); k++) {
 						caminho.melhorCaminho.add(melhorCaminho.get(k));
 					}
 				}
-				
-				melhorCaminho.remove(melhorCaminho.size()-1);
 
+				melhorCaminho.remove(melhorCaminho.size() - 1);
 
 			}
 
@@ -51,15 +52,17 @@ public class CaixeiroViajante {
 
 		verticesVisitados[verticeAtual] = true;
 
-
 		for (int i = 0; i < verticesAdjacentes.size(); i++) {
-			
-			if(custo + grafo[verticeAtual][verticesAdjacentes.get(i)] < caminho.custo) {
+
+			if (custo + grafo[verticeAtual][verticesAdjacentes.get(i)] < caminho.custo) {
 				if (!verticesVisitados[verticesAdjacentes.get(i)]) {
 					verticesVisitados[verticesAdjacentes.get(i)] = true;
-					if(verticesAdjacentes.get(i) != origem) {melhorCaminho.add(verticesAdjacentes.get(i));}
-					 caminho = buscaMelhorCaminho(grafo, origem, verticesAdjacentes.get(i), verticesVisitados,
-							(custo + grafo[verticeAtual][verticesAdjacentes.get(i)]), caminho.custo, melhorCaminho, caminho);
+					if (verticesAdjacentes.get(i) != origem) {
+						melhorCaminho.add(verticesAdjacentes.get(i));
+					}
+					caminho = buscaMelhorCaminho(grafo, origem, verticesAdjacentes.get(i), verticesVisitados,
+							(custo + grafo[verticeAtual][verticesAdjacentes.get(i)]), caminho.custo, melhorCaminho,
+							caminho);
 					verticesVisitados[verticesAdjacentes.get(i)] = false;
 					melhorCaminho.remove(verticesAdjacentes.get(i));
 
@@ -67,7 +70,7 @@ public class CaixeiroViajante {
 			}
 
 		}
-		
+
 		return caminho;
 
 	}
@@ -101,9 +104,9 @@ public class CaixeiroViajante {
 		int melhorCusto = Integer.MAX_VALUE;
 		boolean verticesVisitados[] = null;
 		int graph[][] = null;
-		int i,cont = 0;
+		int i, cont = 0;
 
-		for (i = 0; i < nVertex+1; i++) {
+		for (i = 0; i < nVertex + 1; i++) {
 			cont = 0;
 			String line = text.get(i);
 			if (i == 0) {
@@ -120,38 +123,36 @@ public class CaixeiroViajante {
 					graph[oriVertex][targetVertex] = weight;
 					graph[targetVertex][oriVertex] = weight;
 					cont++;
-					if(cont == nVertex-1)break;
-					
+					if (cont == nVertex - 1)
+						break;
+
 				}
- 
+
 			}
 
 		}
- 
+
 		for (i = 0; i < nVertex; i++) {
 			verticesVisitados[i] = false;
 		}
-		MelhorVertice  melhorVertice = new MelhorVertice();
-		MelhorVertice caminhoBom = buscaMelhorCaminho(graph, origem, origem, verticesVisitados, custo, melhorCusto, melhorCaminho,melhorVertice);
+		MelhorVertice melhorVertice = new MelhorVertice();
+		MelhorVertice caminhoBom = buscaMelhorCaminho(graph, origem, origem, verticesVisitados, custo, melhorCusto,
+				melhorCaminho, melhorVertice);
 		System.out.println("Melhor caminho: " + caminhoBom.melhorCaminho);
 		System.out.println("Melhor custo: " + caminhoBom.custo);
 		long memoria = runtime.totalMemory() - runtime.freeMemory();
-		  System.out.println("Memoria usada em bytes: " + memoria+" bytes");
-		  System.out.println("Memoria usada em megabytes: "
-		        + bytesParaMegabytes(memoria)+" MB");
+		System.out.println("Memoria usada em bytes: " + memoria + " bytes");
+		System.out.println("Memoria usada em megabytes: " + bytesParaMegabytes(memoria) + " MB");
 		elapse = System.currentTimeMillis() - start;
-		elapse = elapse/1000;
-			 System.out.printf("Tempo de execução %d segundos %n", (elapse));
-
-
-
+		elapse = elapse / 1000;
+		System.out.printf("Tempo de execução %d segundos %n", (elapse));
 
 	}
+
 	public static long bytesParaMegabytes(long bytes) {
-		  final long MEGABYTE = 1024L * 1024L;
+		final long MEGABYTE = 1024L * 1024L;
 
-		    return bytes / MEGABYTE;
-		  }
-
+		return bytes / MEGABYTE;
+	}
 
 }
