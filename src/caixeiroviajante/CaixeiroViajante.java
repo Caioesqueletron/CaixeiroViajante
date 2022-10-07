@@ -9,78 +9,75 @@ class MelhorVertice {
 	public int contagemCaminhos = 0;
 }
 public class CaixeiroViajante {
-	public ArrayList<Integer> melhorCaminho1 = new ArrayList<Integer>();
+	public ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
 
-	public static boolean todosForamPercorridos(int nVertex, boolean[] verticesVisitados) {
+	public static boolean todosForamPercorridos(int nVertices, boolean[] verticesVisitados) {
 		int aux = 0;
-		for (int i = 0; i < nVertex; i++) {
+		for (int i = 0; i < nVertices; i++) {
 			if (verticesVisitados[i]) {
 				aux++;
 			}
 		}
-		return aux == nVertex ? true : false;
+		return aux == nVertices ? true : false;
 	}
 
-	public static MelhorVertice buscaMelhorCaminho(int graph[][], int first, int source, boolean[] verticesVisitados, int custo,
-			int melhorCusto, ArrayList<Integer> melhorCaminho, MelhorVertice teste1) {
-
-		List<Integer> verticesAdjacentes = procuraVerticeAjacente(graph, source);
+	public static MelhorVertice buscaMelhorCaminho(int grafo[][], int origem, int verticeAtual, boolean[] verticesVisitados, int custo,
+			int melhorCusto, ArrayList<Integer> melhorCaminho, MelhorVertice caminho) {
+		
+		List<Integer> verticesAdjacentes = procuraVerticeAjacente(grafo, verticeAtual);
 
 		if (todosForamPercorridos(verticesVisitados.length, verticesVisitados)) {
-			if (verticesAdjacentes.contains(first)) {
-				teste1.contagemCaminhos++;
-				custo += graph[source][first];
-				melhorCaminho.add(first);
-				if (custo < teste1.custo) {
+			if (verticesAdjacentes.contains(origem)) {
+				caminho.contagemCaminhos++;
+				custo += grafo[verticeAtual][origem];
+				melhorCaminho.add(origem);
+				if (custo < caminho.custo) {
 					
-					//melhorCaminho.add(first);
-					teste1.custo = custo;
-					teste1.melhorCaminho.clear();
+					caminho.custo = custo;
+					caminho.melhorCaminho.clear();
 					for(int k = 0; k<melhorCaminho.size();k++) {
-						teste1.melhorCaminho.add(melhorCaminho.get(k));
+						caminho.melhorCaminho.add(melhorCaminho.get(k));
 					}
-					//System.out.println(teste1.custo);
 				}
 				
-				//System.out.println(melhorCaminho);
 				melhorCaminho.remove(melhorCaminho.size()-1);
 
 
 			}
 
-			return teste1;
+			return caminho;
 
 		}
 
-		verticesVisitados[source] = true;
+		verticesVisitados[verticeAtual] = true;
 
-		// boolean copiaVerticesVisitados[] = verticesVisitados;
 
 		for (int i = 0; i < verticesAdjacentes.size(); i++) {
+			
+			if(custo + grafo[verticeAtual][verticesAdjacentes.get(i)] < caminho.custo) {
+				if (!verticesVisitados[verticesAdjacentes.get(i)]) {
+					verticesVisitados[verticesAdjacentes.get(i)] = true;
+					if(verticesAdjacentes.get(i) != origem) {melhorCaminho.add(verticesAdjacentes.get(i));}
+					 caminho = buscaMelhorCaminho(grafo, origem, verticesAdjacentes.get(i), verticesVisitados,
+							(custo + grafo[verticeAtual][verticesAdjacentes.get(i)]), caminho.custo, melhorCaminho, caminho);
+					verticesVisitados[verticesAdjacentes.get(i)] = false;
+					melhorCaminho.remove(verticesAdjacentes.get(i));
 
-			if (!verticesVisitados[verticesAdjacentes.get(i)]) {
-				verticesVisitados[verticesAdjacentes.get(i)] = true;
-				if(verticesAdjacentes.get(i) != first) {melhorCaminho.add(verticesAdjacentes.get(i));}
-				// System.out.println(verticesAdjacentes.get(i));
-				 teste1 = buscaMelhorCaminho(graph, first, verticesAdjacentes.get(i), verticesVisitados,
-						(custo + graph[source][verticesAdjacentes.get(i)]), teste1.custo, melhorCaminho, teste1);
-				verticesVisitados[verticesAdjacentes.get(i)] = false;
-				melhorCaminho.remove(verticesAdjacentes.get(i));
-
+				}
 			}
 
 		}
 		
-		return teste1;
+		return caminho;
 
 	}
 
-	private static List<Integer> procuraVerticeAjacente(int graph[][], int source) {
+	private static List<Integer> procuraVerticeAjacente(int graph[][], int verticeAtual) {
 
 		List<Integer> vertices = new ArrayList<Integer>();
 
 		for (int i = 0; i < graph.length; i++) {
-			if (graph[source][i] != 0 && source != i) {
+			if (graph[verticeAtual][i] != 0 && verticeAtual != i) {
 				vertices.add(i);
 			}
 		}
@@ -89,23 +86,27 @@ public class CaixeiroViajante {
 	}
 
 	public static void main(String[] args) {
-
+		Runtime runtime = Runtime.getRuntime();
+		runtime.gc();
+		long start;
+		long elapse;
+		start = 0;
+		start = System.currentTimeMillis();
 		FileManager fileManager = new FileManager();
 		ArrayList<String> text = fileManager.stringReader("./data/Teste_2.txt");
 		ArrayList<Integer> melhorCaminho = new ArrayList<Integer>();
-
-		int nVertex = 0;
-		int source = 0;
-		int cost = 0;
-		int bestCost = Integer.MAX_VALUE;
+		int nVertex = 21;
+		int origem = 0;
+		int custo = 0;
+		int melhorCusto = Integer.MAX_VALUE;
 		boolean verticesVisitados[] = null;
 		int graph[][] = null;
-		int i,j;
+		int i,cont = 0;
 
-		for (i = 0; i < text.size(); i++) {
+		for (i = 0; i < nVertex+1; i++) {
+			cont = 0;
 			String line = text.get(i);
 			if (i == 0) {
-				nVertex = Integer.parseInt(line.trim());
 				graph = new int[nVertex][nVertex];
 				verticesVisitados = new boolean[nVertex];
 			} else {
@@ -118,24 +119,39 @@ public class CaixeiroViajante {
 
 					graph[oriVertex][targetVertex] = weight;
 					graph[targetVertex][oriVertex] = weight;
+					cont++;
+					if(cont == nVertex-1)break;
+					
 				}
  
 			}
 
 		}
-
-		
-		  
-		 for (i = 0; i < nVertex; i++) { for (j = 0; j < nVertex; j++) {
-		System.out.print(" " + graph[i][j] + " "); } System.out.println(); }
-		 
+ 
 		for (i = 0; i < nVertex; i++) {
 			verticesVisitados[i] = false;
 		}
-		MelhorVertice  teste1 = new MelhorVertice();
-		MelhorVertice teste = buscaMelhorCaminho(graph, source, source, verticesVisitados, cost, bestCost, melhorCaminho,teste1);
-		System.out.println(teste.melhorCaminho);
+		MelhorVertice  melhorVertice = new MelhorVertice();
+		MelhorVertice caminhoBom = buscaMelhorCaminho(graph, origem, origem, verticesVisitados, custo, melhorCusto, melhorCaminho,melhorVertice);
+		System.out.println("Melhor caminho: " + caminhoBom.melhorCaminho);
+		System.out.println("Melhor custo: " + caminhoBom.custo);
+		long memoria = runtime.totalMemory() - runtime.freeMemory();
+		  System.out.println("Memoria usada em bytes: " + memoria+" bytes");
+		  System.out.println("Memoria usada em megabytes: "
+		        + bytesParaMegabytes(memoria)+" MB");
+		elapse = System.currentTimeMillis() - start;
+		elapse = elapse/1000;
+			 System.out.printf("Tempo de execução %d segundos %n", (elapse));
+
+
+
 
 	}
+	public static long bytesParaMegabytes(long bytes) {
+		  final long MEGABYTE = 1024L * 1024L;
+
+		    return bytes / MEGABYTE;
+		  }
+
 
 }
