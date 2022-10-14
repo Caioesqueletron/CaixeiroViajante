@@ -34,7 +34,6 @@ public class CaixeiroViajante {
 				custo += grafo[verticeAtual][origem];
 				melhorCaminho.add(origem);
 				if (custo < caminho.custo) {
-
 					caminho.custo = custo;
 					caminho.melhorCaminho.clear();
 					for (int k = 0; k < melhorCaminho.size(); k++) {
